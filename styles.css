@@ -1,0 +1,133 @@
+:root {
+    --primary: #6704b9;
+    --accent: #f77422;
+    --secondary: #2148a3;
+    --light: #f9f9f9;
+    --dark: #1e1e1e;
+    --text: #333;
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--light);
+    color: var(--text);
+    padding: 2rem;
+    line-height: 1.6;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary);
+    text-align: center;
+}
+
+h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: var(--secondary);
+}
+
+h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    color: var(--primary);
+}
+
+section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+form {
+    display: grid;
+    gap: 1rem;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    font-weight: 500;
+}
+
+input,
+select {
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+input:focus,
+select:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+button {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    width: fit-content;
+    justify-self: start;
+}
+
+button:hover {
+    background-color: var(--primary);
+}
+
+#filament-list {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filament-use {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.filament-use:last-child {
+    border-bottom: none;
+}
+
+.resultado {
+    padding: 1rem;
+    background: #f5f5f5;
+    border-radius: var(--border-radius);
+    border-left: 5px solid var(--primary);
+    font-size: 1rem;
+}
+
+@media (min-width: 768px) {
+    form {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .filament-use {
+        grid-template-columns: 1fr 1fr;
+    }
+}

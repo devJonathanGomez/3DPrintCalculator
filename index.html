@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Impresión 3D</title>
+    <link rel="stylesheet" href="styles.css" />
+
+</head>
+
+<body>
+    <h1>Calculadora de Presupuesto para Impresión 3D</h1>
+
+    <!-- Sección 1: Configuraciones generales -->
+    <section>
+        <h2>Configuración de Costos</h2>
+        <form id="config-form">
+            <!-- Costos electricidad -->
+            <label>Precio kWh:
+                <input type="number" step="any" name="kwhPrice" required />
+            </label>
+            <label>Consumo impresora (kWh/h):
+                <input type="number" step="any" name="printerConsumption" required />
+            </label>
+
+            <!-- Costos básicos -->
+            <label>Diseño (USD/h):
+                <input type="number" step="any" name="designCostPerHour" required />
+            </label>
+            <label>Mano de obra (USD/h):
+                <input type="number" step="any" name="laborCostPerHour" required />
+            </label>
+            <label>Impresión (USD/h):
+                <input type="number" step="any" name="printCostPerHour" required />
+            </label>
+
+            <!-- Conversión -->
+            <label>USD a UYU:
+                <input type="number" step="any" name="usdToUyi" required />
+            </label>
+
+            <!-- Costos mensuales -->
+            <label>Mantenimiento:
+                <input type="number" step="any" name="maintenanceMonthly" required />
+            </label>
+            <label>Gastos paralelos:
+                <input type="number" step="any" name="extrasMonthly" required />
+            </label>
+
+            <!-- Margen de error -->
+            <label>Margen de error (%):
+                <input type="number" step="any" name="errorMargin" required />
+            </label>
+
+            <button type="submit">Guardar configuración</button>
+        </form>
+    </section>
+
+    <!-- Gestión de filamentos -->
+    <section>
+        <h2>Filamentos disponibles</h2>
+        <div id="filament-list"></div>
+
+        <form id="add-filament-form">
+            <label>Nombre:
+                <input type="text" name="name" required />
+            </label>
+            <label>Tipo:
+                <input type="text" name="type" required />
+            </label>
+            <label>Color:
+                <input type="color" name="color" value="#000000" required />
+            </label>
+            <label>Precio por kg (USD):
+                <input type="number" step="any" name="price" required />
+            </label>
+            <button type="submit">Agregar filamento</button>
+        </form>
+    </section>
+
+    <!-- Sección 2: Parámetros específicos -->
+    <section>
+        <h2>Detalles de la Impresión</h2>
+        <form id="print-form">
+            <!-- Selección de filamentos -->
+            <div id="used-filaments">
+                <h3>Filamentos utilizados</h3>
+                <div class="filament-use" data-index="0">
+                    <label>Filamento 1:
+                        <select name="filament_0"></select>
+                    </label>
+                    <label>Peso (g):
+                        <input type="number" step="any" name="weight_0" min="0" />
+                    </label>
+                </div>
+                <div class="filament-use" data-index="1">
+                    <label>Filamento 2:
+                        <select name="filament_1"></select>
+                    </label>
+                    <label>Peso (g):
+                        <input type="number" step="any" name="weight_1" min="0" />
+                    </label>
+                </div>
+                <div class="filament-use" data-index="2">
+                    <label>Filamento 3:
+                        <select name="filament_2"></select>
+                    </label>
+                    <label>Peso (g):
+                        <input type="number" step="any" name="weight_2" min="0" />
+                    </label>
+                </div>
+                <div class="filament-use" data-index="3">
+                    <label>Filamento 4:
+                        <select name="filament_3"></select>
+                    </label>
+                    <label>Peso (g):
+                        <input type="number" step="any" name="weight_3" min="0" />
+                    </label>
+                </div>
+                <div class="filament-use" data-index="4">
+                    <label>Filamento 5:
+                        <select name="filament_4"></select>
+                    </label>
+                    <label>Peso (g):
+                        <input type="number" step="any" name="weight_4" min="0" />
+                    </label>
+                </div>
+            </div>
+
+
+            <!-- Tiempos (horas) -->
+            <label>Diseño:
+                <input type="number" step="any" name="design" required />
+            </label>
+            <label>Mano de obra:
+                <input type="number" step="any" name="labor" required />
+            </label>
+            <label>Impresión:
+                <input type="number" step="any" name="printing" required />
+            </label>
+
+            <!-- Otros -->
+            <label>Packaging (USD):
+                <input type="number" step="any" name="packaging" required />
+            </label>
+            <label>Extras (USD, por si se quiere robar mas):
+                <input type="number" step="any" name="extra" required />
+            </label>
+
+            <!-- Ganancia -->
+            <label>Porcentaje de ganancia:
+                <input type="number" step="any" name="profit" required />
+            </label>
+
+        </form>
+    </section>
+
+    <!-- Resultados -->
+    <section>
+        <h2>Desglose de presupuesto</h2>
+        <div id="breakdown" class="resultado"></div>
+    </section>
+
+    <!-- Script -->
+    <script defer src="script.js"></script>
+</body>
+
+</html>
