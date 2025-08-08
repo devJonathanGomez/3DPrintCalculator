@@ -1,13 +1,14 @@
 {
   "config": {
-    "kwhPrice": 0.22,
+    "kwhPrice": 0.195,
     "printerConsumption": 0.28,
     "designCostPerHour": 0.75,
     "laborCostPerHour": 5,
     "printCostPerHour": 0,
+    "amortizationCostPerHour": 0.30,
     "usdToUyi": 42,
-    "maintenanceMonthly": 32,
-    "extrasMonthly": 15,
+    "maintenanceMonthly": 12,
+    "parallelExpenses": 15,
     "errorMargin": 25
   },
   "filaments": [
@@ -15,7 +16,7 @@
       "name": "PLA Blanco",
       "type": "PLA",
       "color": "#ffffff",
-      "price": 20
+      "price": 17
     }
   ]
 }

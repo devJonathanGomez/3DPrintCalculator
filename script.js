@@ -10,27 +10,32 @@ const FILAMENTS_KEY = '3d_filaments';
 // CARGA DE DATOS INICIALES
 // =======================
 async function loadInitialData() {
-    // Verifica si ya hay datos guardados en localStorage
     const storedConfig = localStorage.getItem(CONFIG_KEY);
     const storedFilaments = localStorage.getItem(FILAMENTS_KEY);
 
     if (storedConfig && storedFilaments) {
-        // Si hay datos, los parsea desde JSON
         config = JSON.parse(storedConfig);
         filaments = JSON.parse(storedFilaments);
     } else {
-        // Si no hay datos, los carga desde el archivo config.json
         const response = await fetch('config.json');
         const data = await response.json();
         config = data.config;
         filaments = data.filaments;
-        saveData(); // Guarda en localStorage
+        saveData();
     }
 
-    // Pinta la configuración y los filamentos en la interfaz
     populateConfigForm();
     populateFilamentList();
     populateFilamentSelects();
+
+    const autoCheck = document.getElementById('autoUsdCheck');
+    autoCheck.checked = !!config.useAutoUSD;
+
+    toggleUsdInput();
+
+    if (config.useAutoUSD) {
+        await fetchUSD();
+    }
 }
 
 // =======================
@@ -46,11 +51,19 @@ function saveData() {
 // =======================
 function populateConfigForm() {
     const form = document.getElementById('config-form');
-    // Recorre la configuración y pone cada valor en su input correspondiente
     Object.entries(config).forEach(([key, value]) => {
         const input = form.elements[key];
         if (input) input.value = value;
     });
+}
+
+// =======================
+// FUNCION PARA ACTIVAR/DESACTIVAR INPUT USD SEGÚN CHECKBOX
+// =======================
+function toggleUsdInput() {
+    const usdInput = document.querySelector('[name="usdToUyi"]');
+    const autoCheck = document.getElementById('autoUsdCheck');
+    usdInput.disabled = autoCheck.checked;
 }
 
 // =======================
@@ -59,11 +72,11 @@ function populateConfigForm() {
 document.getElementById('config-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const form = e.target;
-    // Convierte el formulario en un objeto
     config = Object.fromEntries(new FormData(form));
-    // Convierte todos los valores a números
     Object.keys(config).forEach(k => config[k] = parseFloat(config[k]));
+    config.useAutoUSD = document.getElementById('autoUsdCheck').checked;
     saveData();
+    toggleUsdInput();
     alert('Configuración guardada');
 });
 
@@ -74,22 +87,20 @@ function populateFilamentList() {
     const container = document.getElementById('filament-list');
     container.innerHTML = '';
 
-    // Crea un bloque por cada filamento
     filaments.forEach((f, i) => {
         const div = document.createElement('div');
         div.innerHTML = `
+            <span style="background-color:${f.color}; color:${f.color}; border:1px solid black">-------</span> 
             <strong>${f.name}</strong> (${f.type}) - 
-            <span style="color:${f.color}">${f.color}</span> - 
             $${f.price}/kg
             <button data-index="${i}">Eliminar</button>
         `;
         container.appendChild(div);
     });
 
-    // Asigna eventos para eliminar filamentos
     container.querySelectorAll('button').forEach(btn => {
         btn.addEventListener('click', () => {
-            filaments.splice(parseInt(btn.dataset.index), 1); // Elimina por índice
+            filaments.splice(parseInt(btn.dataset.index), 1);
             saveData();
             populateFilamentList();
             populateFilamentSelects();
@@ -105,7 +116,7 @@ document.getElementById('add-filament-form').addEventListener('submit', (e) => {
     const form = e.target;
     const filament = Object.fromEntries(new FormData(form));
     filament.price = parseFloat(filament.price);
-    filaments.push(filament); // Agrega a la lista
+    filaments.push(filament);
     form.reset();
     saveData();
     populateFilamentList();
@@ -118,9 +129,7 @@ document.getElementById('add-filament-form').addEventListener('submit', (e) => {
 function populateFilamentSelects() {
     const selects = document.querySelectorAll('#used-filaments select');
     selects.forEach(select => {
-        // Opción por defecto
         select.innerHTML = '<option value="">-- Seleccionar --</option>';
-        // Agrega todas las opciones de filamentos
         filaments.forEach((f, i) => {
             const opt = document.createElement('option');
             opt.value = i;
@@ -129,6 +138,42 @@ function populateFilamentSelects() {
         });
     });
 }
+
+// =======================
+// OBTENER PRECIO DEL DÓLAR DESDE dolarapi.com
+// =======================
+async function fetchUSD() {
+    try {
+        const res = await fetch('https://uy.dolarapi.com/v1/cotizaciones/usd');
+        const data = await res.json();
+
+        if (data && data.compra && data.venta) {
+            const usdValue = (parseFloat(data.compra) + parseFloat(data.venta)) / 2;
+            config.usdToUyi = usdValue;
+            document.querySelector('[name="usdToUyi"]').value = usdValue.toFixed(2);
+            saveData();
+            calculateBudget(); // recalcular con nuevo dólar
+        } else {
+            alert('No se pudo obtener el valor del dólar.');
+        }
+    } catch (err) {
+        alert('Error al obtener valor del dólar');
+        console.error(err);
+    }
+}
+
+// =======================
+// EVENTO PARA EL CHECKBOX DE VALOR AUTOMÁTICO
+// =======================
+document.getElementById('autoUsdCheck').addEventListener('change', async (e) => {
+    config.useAutoUSD = e.target.checked;
+    saveData();
+    toggleUsdInput();
+
+    if (e.target.checked) {
+        await fetchUSD();
+    }
+});
 
 // =======================
 // EVENTO PARA CALCULAR PRESUPUESTO EN TIEMPO REAL
@@ -141,9 +186,9 @@ document.getElementById('print-form').addEventListener('input', calculateBudget)
 function calculateBudget() {
     const form = document.getElementById('print-form');
     const breakdown = document.getElementById('breakdown');
-    const usdToUyu = config.usdToUyi || 0;
+    console.log(config)
+    const usdToUyu = config.usdToUyi;
 
-    // Obtiene valores del formulario de impresión
     let design = parseFloat(form.elements['design'].value || 0);
     let labor = parseFloat(form.elements['labor'].value || 0);
     let printing = parseFloat(form.elements['printing'].value || 0);
@@ -152,53 +197,52 @@ function calculateBudget() {
     let profit = parseFloat(form.elements['profit'].value || 0);
     let errorMargin = parseFloat(config.errorMargin || 0);
 
-    // Calcula costo de los filamentos usados
     const filamentCosts = Array.from({ length: 5 }).map((_, i) => {
         const sel = form.elements[`filament_${i}`];
         const weight = parseFloat(form.elements[`weight_${i}`].value || 0);
-        if (!sel || sel.value === '') return 0; // Si no se seleccionó, no suma
+        if (!sel || sel.value === '') return 0;
         const filament = filaments[sel.value];
-        return (filament.price / 1000) * weight; // Precio proporcional por gramos
+        return (filament.price / 1000) * weight;
     });
 
-    // Costos base
     const electricity = config.kwhPrice * config.printerConsumption * printing;
     const designCost = design * config.designCostPerHour;
     const laborCost = labor * config.laborCostPerHour;
     const printCost = printing * config.printCostPerHour;
-    const maintenance = printing * (config.maintenanceMonthly / 30 / 24); // Costo proporcional
-    const extrasMonthly = (config.extrasMonthly / 30); // Costo diario
+    const amortizationCost = printing * config.amortizationCostPerHour;
+    const maintenance = printing * (config.maintenanceMonthly / 30 / 24);
+    const parallelExpenses = printing * (config.parallelExpenses / 30 / 24);
 
-    // Suma de todos los costos
-    const totalCostUSD =
+    const varCostUSD =
+        filamentCosts.reduce((a, b) => a + b, 0) +
         electricity +
+        maintenance +
+        parallelExpenses;
+
+    const fixCostUSD = 
         designCost +
         laborCost +
         printCost +
-        maintenance +
-        extrasMonthly +
+        amortizationCost +
         packaging +
-        extra +
-        filamentCosts.reduce((a, b) => a + b, 0);
+        extra;
 
-    // Aplica margen de error y ganancia
-    const errorAdjusted = totalCostUSD * (1 + errorMargin / 100);
-    const finalPriceUSD = errorAdjusted * (1 + profit / 100);
+    const varCostAdjusted = varCostUSD * (1 + errorMargin / 100);
+    const finalPriceUSD = varCostAdjusted * (1 + profit / 100) + fixCostUSD;
     const finalPriceUYU = finalPriceUSD * usdToUyu;
 
-    // Muestra desglose en pantalla
     breakdown.innerHTML = `
+        <p>Filamentos: $${filamentCosts.reduce((a, b) => a + b, 0).toFixed(2)}</p>
         <p>Electricidad: $${electricity.toFixed(2)}</p>
+        <p>Mantenimiento: $${maintenance.toFixed(2)}</p>
+        <p>Gastos paralelos: $${parallelExpenses.toFixed(2)}</p>
         <p>Diseño: $${designCost.toFixed(2)}</p>
         <p>Mano de obra: $${laborCost.toFixed(2)}</p>
         <p>Impresión: $${printCost.toFixed(2)}</p>
-        <p>Filamentos: $${filamentCosts.reduce((a, b) => a + b, 0).toFixed(2)}</p>
-        <p>Mantenimiento: $${maintenance.toFixed(2)}</p>
-        <p>Extras mensuales: $${extrasMonthly.toFixed(2)}</p>
         <p>Packaging: $${packaging.toFixed(2)}</p>
         <p>Extras: $${extra.toFixed(2)}</p>
-        <p>Total: $${totalCostUSD.toFixed(2)}</p>
-        <p><strong>Total (con margen de error): $${errorAdjusted.toFixed(2)}</strong></p>
+        <p>Total: $${varCostUSD.toFixed(2)}</p>
+        <p><strong>Total (con margen de error): $${varCostAdjusted.toFixed(2)}</strong></p>
         <p><strong>Precio final (con ganancia): $${finalPriceUSD.toFixed(2)} / $${finalPriceUYU.toFixed(2)} UYU</strong></p>
     `;
 }

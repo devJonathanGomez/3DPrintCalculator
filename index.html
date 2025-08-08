@@ -34,10 +34,17 @@
             <label>Impresión (USD/h):
                 <input type="number" step="any" name="printCostPerHour" required />
             </label>
+            <label>Amortización (USD/h):
+                <input type="number" step="any" name="amortizationCostPerHour" required />
+            </label>
 
             <!-- Conversión -->
             <label>USD a UYU:
                 <input type="number" step="any" name="usdToUyi" required />
+            </label>
+            <label>
+                <input type="checkbox" id="autoUsdCheck" />
+                Usar valor automático
             </label>
 
             <!-- Costos mensuales -->
@@ -45,7 +52,7 @@
                 <input type="number" step="any" name="maintenanceMonthly" required />
             </label>
             <label>Gastos paralelos:
-                <input type="number" step="any" name="extrasMonthly" required />
+                <input type="number" step="any" name="parallelExpenses" required />
             </label>
 
             <!-- Margen de error -->
