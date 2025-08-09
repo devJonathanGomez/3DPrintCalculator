@@ -6,7 +6,6 @@
     "laborCostPerHour": 5,
     "printCostPerHour": 0,
     "amortizationCostPerHour": 0.30,
-    "usdToUyi": 42,
     "maintenanceMonthly": 12,
     "parallelExpenses": 15,
     "errorMargin": 25
@@ -17,6 +16,120 @@
       "type": "PLA",
       "color": "#ffffff",
       "price": 17
+    },
+    {
+      "name": "PLA Negro",
+      "type": "PLA",
+      "color": "#000000",
+      "price": 17
+    },
+    {
+      "name": "PLA Rojo",
+      "type": "PLA",
+      "color": "#ff0000",
+      "price": 18
+    },
+    {
+      "name": "PLA Azul",
+      "type": "PLA",
+      "color": "#0055ff",
+      "price": 18
+    },
+    {
+      "name": "PLA Verde",
+      "type": "PLA",
+      "color": "#00cc44",
+      "price": 18
+    },
+    {
+      "name": "PLA Amarillo",
+      "type": "PLA",
+      "color": "#ffdd00",
+      "price": 18
+    },
+    {
+      "name": "PLA Naranja",
+      "type": "PLA",
+      "color": "#ff6600",
+      "price": 18
+    },
+    {
+      "name": "PLA Gris",
+      "type": "PLA",
+      "color": "#888888",
+      "price": 17
+    },
+    {
+      "name": "PLA Transparente",
+      "type": "PLA",
+      "color": "#e6e6e6",
+      "price": 19
+    },
+    {
+      "name": "PETG Negro",
+      "type": "PETG",
+      "color": "#000000",
+      "price": 20
+    },
+    {
+      "name": "PETG Azul",
+      "type": "PETG",
+      "color": "#0033aa",
+      "price": 20
+    },
+    {
+      "name": "PETG Rojo",
+      "type": "PETG",
+      "color": "#cc0000",
+      "price": 20
+    },
+    {
+      "name": "PETG Verde",
+      "type": "PETG",
+      "color": "#009944",
+      "price": 20
+    },
+    {
+      "name": "ABS Blanco",
+      "type": "ABS",
+      "color": "#ffffff",
+      "price": 22
+    },
+    {
+      "name": "ABS Negro",
+      "type": "ABS",
+      "color": "#000000",
+      "price": 22
+    },
+    {
+      "name": "ABS Azul",
+      "type": "ABS",
+      "color": "#004488",
+      "price": 22
+    },
+    {
+      "name": "ABS Rojo",
+      "type": "ABS",
+      "color": "#bb0000",
+      "price": 22
+    },
+    {
+      "name": "TPU Negro",
+      "type": "TPU",
+      "color": "#000000",
+      "price": 25
+    },
+    {
+      "name": "TPU Transparente",
+      "type": "TPU",
+      "color": "#f2f2f2",
+      "price": 26
+    },
+    {
+      "name": "TPU Amarillo",
+      "type": "TPU",
+      "color": "#ffee00",
+      "price": 25
     }
   ]
 }

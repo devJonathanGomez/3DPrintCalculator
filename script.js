@@ -33,9 +33,7 @@ async function loadInitialData() {
 
     toggleUsdInput();
 
-    if (config.useAutoUSD) {
-        await fetchUSD();
-    }
+    await fetchUSD();
 }
 
 // =======================
@@ -61,7 +59,7 @@ function populateConfigForm() {
 // FUNCION PARA ACTIVAR/DESACTIVAR INPUT USD SEGÚN CHECKBOX
 // =======================
 function toggleUsdInput() {
-    const usdInput = document.querySelector('[name="usdToUyi"]');
+    const usdInput = document.querySelector('[name="usdToUy"]');
     const autoCheck = document.getElementById('autoUsdCheck');
     usdInput.disabled = autoCheck.checked;
 }
@@ -90,10 +88,12 @@ function populateFilamentList() {
     filaments.forEach((f, i) => {
         const div = document.createElement('div');
         div.innerHTML = `
+            <div>
             <span style="background-color:${f.color}; color:${f.color}; border:1px solid black">-------</span> 
-            <strong>${f.name}</strong> (${f.type}) - 
+            <strong>-${f.name}</strong> (${f.type}) - 
             $${f.price}/kg
-            <button data-index="${i}">Eliminar</button>
+            </div>
+            <button data-index="${i}">❌</button>
         `;
         container.appendChild(div);
     });
@@ -133,7 +133,10 @@ function populateFilamentSelects() {
         filaments.forEach((f, i) => {
             const opt = document.createElement('option');
             opt.value = i;
-            opt.textContent = `${f.name} (${f.type})`;
+            opt.innerHTML = `
+            <span style="background-color:${f.color}; color:${f.color}; border:1px solid black">-------</span> 
+            <strong>-${f.name}</strong> (${f.type})
+            `;
             select.appendChild(opt);
         });
     });
@@ -149,8 +152,8 @@ async function fetchUSD() {
 
         if (data && data.compra && data.venta) {
             const usdValue = (parseFloat(data.compra) + parseFloat(data.venta)) / 2;
-            config.usdToUyi = usdValue;
-            document.querySelector('[name="usdToUyi"]').value = usdValue.toFixed(2);
+            config.usdToUy = usdValue;
+            document.querySelector('[name="usdToUy"]').value = usdValue.toFixed(2);
             saveData();
             calculateBudget(); // recalcular con nuevo dólar
         } else {
@@ -181,13 +184,22 @@ document.getElementById('autoUsdCheck').addEventListener('change', async (e) => 
 document.getElementById('print-form').addEventListener('input', calculateBudget);
 
 // =======================
+// CONFIG TOGGLE
+// =======================
+document.getElementById('configToggle').addEventListener('click', () => {
+    document.getElementById('costos').classList.toggle('hidden');
+    document.getElementById('filament').classList.toggle('hidden');
+});
+
+
+// =======================
 // CALCULAR PRESUPUESTO
 // =======================
 function calculateBudget() {
     const form = document.getElementById('print-form');
     const breakdown = document.getElementById('breakdown');
     console.log(config)
-    const usdToUyu = config.usdToUyi;
+    const usdToUyu = config.usdToUy;
 
     let design = parseFloat(form.elements['design'].value || 0);
     let labor = parseFloat(form.elements['labor'].value || 0);
@@ -219,7 +231,7 @@ function calculateBudget() {
         maintenance +
         parallelExpenses;
 
-    const fixCostUSD = 
+    const fixCostUSD =
         designCost +
         laborCost +
         printCost +
@@ -228,7 +240,7 @@ function calculateBudget() {
         extra;
 
     const varCostAdjusted = varCostUSD * (1 + errorMargin / 100);
-    const finalPriceUSD = varCostAdjusted * (1 + profit / 100) + fixCostUSD;
+    const finalPriceUSD = (varCostAdjusted + fixCostUSD) * (1 + profit / 100);
     const finalPriceUYU = finalPriceUSD * usdToUyu;
 
     breakdown.innerHTML = `
@@ -241,8 +253,8 @@ function calculateBudget() {
         <p>Impresión: $${printCost.toFixed(2)}</p>
         <p>Packaging: $${packaging.toFixed(2)}</p>
         <p>Extras: $${extra.toFixed(2)}</p>
-        <p>Total: $${varCostUSD.toFixed(2)}</p>
-        <p><strong>Total (con margen de error): $${varCostAdjusted.toFixed(2)}</strong></p>
+        <p>Total: $${(varCostUSD + fixCostUSD).toFixed(2)}</p>
+        <p><strong>Total (con margen de error): $${(varCostAdjusted + fixCostUSD).toFixed(2)}</strong></p>
         <p><strong>Precio final (con ganancia): $${finalPriceUSD.toFixed(2)} / $${finalPriceUYU.toFixed(2)} UYU</strong></p>
     `;
 }
