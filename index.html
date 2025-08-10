@@ -11,7 +11,7 @@
 
 <body>
     <h1>Calculadora de Presupuesto para Impresión 3D</h1>
-    <button id="configToggle">config</button>
+    <button id="configToggle">Configuración</button>
 
     <!-- Sección 1: Configuraciones generales -->
     <section id="costos" class="hidden">
@@ -40,20 +40,20 @@
             </label>
 
             <!-- Conversión -->
-            <label>USD a UYU:
+            <label>Conversión USD a UYU:
                 <input type="number" step="any" name="usdToUy" required />
             </label>
             <label id="UsdUyuCheck">
-                <p>USD a UYU AUTO</p>
+                <p>USD a UYU Automatico (Promedio compra-venta)</p>
                 <input type="checkbox" id="autoUsdCheck" checked/>
             </label>
 
 
             <!-- Costos mensuales -->
-            <label>Mantenimiento:
+            <label>Mantenimiento (USD/mes):
                 <input type="number" step="any" name="maintenanceMonthly" required />
             </label>
-            <label>Gastos paralelos:
+            <label>Gastos paralelos (USD/mes):
                 <input type="number" step="any" name="parallelExpenses" required />
             </label>
 
@@ -144,15 +144,15 @@
             </div>
 
             <div>
-                <h3>.</h3>
+                <br><br>
                 <!-- Tiempos (horas) -->
-                <label>Diseño:
+                <label>Diseño (h):
                     <input type="number" step="any" name="design" required />
                 </label>
-                <label>Mano de obra:
+                <label>Mano de obra (h):
                     <input type="number" step="any" name="labor" required />
                 </label>
-                <label>Impresión:
+                <label>Impresión (h):
                     <input type="number" step="any" name="printing" required />
                 </label>
 
@@ -160,7 +160,7 @@
                 <label>Packaging (USD):
                     <input type="number" step="any" name="packaging" required />
                 </label>
-                <label>Extras:
+                <label>Extras (USD):
                     <input type="number" step="any" name="extra" required />
                 </label>
 

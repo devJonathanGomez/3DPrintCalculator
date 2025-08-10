@@ -134,8 +134,7 @@ function populateFilamentSelects() {
             const opt = document.createElement('option');
             opt.value = i;
             opt.innerHTML = `
-            <span style="background-color:${f.color}; color:${f.color}; border:1px solid black">-------</span> 
-            <strong>-${f.name}</strong> (${f.type})
+            (${f.type}) <strong>${f.name}</strong>
             `;
             select.appendChild(opt);
         });
