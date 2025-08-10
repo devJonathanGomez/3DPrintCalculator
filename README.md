@@ -37,12 +37,14 @@ Permite manejar múltiples tipos de filamento, configurar tarifas personalizadas
 
 ## 📂 Estructura del proyecto
 
-3DPrintCalculator/
-├── index.html # Interfaz principal
-├── script.js # Lógica y cálculos
-├── styles.css # Estilos
-├── config.json # Configuración y filamentos iniciales
-└── README.md # Documentación
+3DPrintCalculator/  
+├── index.html # Interfaz principal  
+├── script.js # Lógica y cálculos  
+├── styles.css # Estilos  
+├── config.json # Configuración y filamentos iniciales  
+└── README.md  # Documentación  
+
+---
 
 ## 🚀 Instrucciones de uso
 
